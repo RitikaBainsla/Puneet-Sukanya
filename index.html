@@ -78,7 +78,7 @@ body.intro-active { overflow:hidden; }
   <section class="opening-screen" id="openingScreen" aria-label="Opening invitation video" tabindex="0">
     <video class="opening-video" id="openingVideo" src="opening.mp4" playsinline webkit-playsinline preload="auto" aria-label="Tap to play the opening invitation"></video>
   </section>
-  <video id="backgroundMusic" class="background-music" src="shava-shava.mp4" preload="auto" loop playsinline></video>
+  <video id="backgroundMusic" class="background-music" src="shava-shava.mp4" preload="none" loop playsinline></video>
   <main id="invitation">
     <section class="page" aria-label="Invitation page 1">
       <video class="invite-video" src="1.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Invitation design 1"></video>
@@ -123,7 +123,11 @@ body.intro-active { overflow:hidden; }
       <video class="invite-video" src="5.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Invitation design 5"></video>
       <div class="petals" data-colors="#d7b77e,#f3e2bf,#c88d68,#fff4da"></div>
     </section>
-    <section class="map-page" aria-label="Venue and map">
+    
+    <section class="page" id="puneet-sukanya-page" aria-label="Puneet and Sukanya video page">
+      <video class="invite-video" src="Puneet%20%26%20Sukanya.mp4" playsinline muted loop preload="metadata" aria-label="Puneet and Sukanya invitation video"></video>
+    </section>
+<section class="map-page" aria-label="Venue and map">
       <div class="eyebrow">We look forward to celebrating with you</div>
       <h1>Find the Venue</h1>
       <p><strong>The Fern Residency Galaxy Mall</strong><br>Asansol, West Bengal, India</p>
@@ -141,6 +145,11 @@ body.intro-active { overflow:hidden; }
   const intro = document.getElementById('openingScreen');
   const introVideo = document.getElementById('openingVideo');
   const backgroundMusic = document.getElementById('backgroundMusic');
+  if (backgroundMusic) {
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.muted = false;
+  }
   const invitation = document.getElementById('invitation');
   let started = false;
 
@@ -148,7 +157,6 @@ body.intro-active { overflow:hidden; }
     if (started) return;
     started = true;
     introVideo.muted = true;
-    if (backgroundMusic) { backgroundMusic.muted = false; backgroundMusic.play().catch(() => {}); }
     const p = introVideo.play();
     if (p && p.catch) p.catch(() => { started = false; });
   }
@@ -163,7 +171,17 @@ body.intro-active { overflow:hidden; }
   intro.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startIntro(); }
   });
-  introVideo.addEventListener('ended', revealInvitation);
+  introVideo.addEventListener('ended', () => {
+    revealInvitation();
+    // Start the background song only after the opening video has completely finished.
+    const music = document.getElementById('backgroundMusic');
+    if (music) {
+      music.volume = 0.65;
+      music.play().catch(() => {
+        // Some browsers may require another user gesture before audio can start.
+      });
+    }
+  });
 
   document.querySelectorAll('.petals').forEach(layer => {
     if (reduce) return;
