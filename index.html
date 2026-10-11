@@ -77,7 +77,7 @@ body.intro-active { overflow:hidden; }
 </head>
 <body class="intro-active">
   <section class="opening-screen" id="openingScreen" aria-label="Opening invitation video" tabindex="0">
-    <video class="opening-video" id="openingVideo" src="opening.mp4" playsinline webkit-playsinline preload="auto" aria-label="Tap to play the opening invitation"></video>
+    <video class="opening-video" id="openingVideo" src="opening.mp4" autoplay muted playsinline webkit-playsinline preload="auto" aria-label="Tap to play the opening invitation"></video>
   </section>
   <audio id="backgroundMusic" class="background-music" src="new-song.mp3" preload="none" loop></audio>
   <main id="invitation">
@@ -186,6 +186,8 @@ body.intro-active { overflow:hidden; }
   intro.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startIntro(); }
   });
+  // Try to start the opening video automatically and silently; keep tap as a browser fallback.
+  startIntro();
   introVideo.addEventListener('ended', () => {
     revealInvitation();
     // Start the background song only after the opening video has completely finished.
